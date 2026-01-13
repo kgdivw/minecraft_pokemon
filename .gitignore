@@ -1,0 +1,11 @@
+# Godot cache and generated files
+.godot/
+
+# Temporary files
+tmpclaude-*
+*.tmp
+
+# Export builds
+export/
+*.apk
+*.aab
