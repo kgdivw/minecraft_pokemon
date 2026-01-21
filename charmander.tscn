@@ -1,0 +1,61 @@
+[gd_scene load_steps=6 format=3]
+
+[sub_resource type="StandardMaterial3D" id="orange_mat"]
+albedo_color = Color(0.95, 0.45, 0.15, 1)
+
+[sub_resource type="StandardMaterial3D" id="cream_mat"]
+albedo_color = Color(0.95, 0.85, 0.6, 1)
+
+[sub_resource type="StandardMaterial3D" id="black_mat"]
+albedo_color = Color(0.1, 0.1, 0.1, 1)
+
+[sub_resource type="StandardMaterial3D" id="flame_mat"]
+albedo_color = Color(1.0, 0.4, 0.0, 1)
+emission_enabled = true
+emission = Color(1.0, 0.3, 0.0, 1)
+emission_energy_multiplier = 2.0
+
+[sub_resource type="BoxMesh" id="block"]
+size = Vector3(1, 1, 1)
+
+[node name="Charmander" type="Node3D"]
+
+[node name="Body1" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5, 0)
+mesh = SubResource("block")
+material_override = SubResource("orange_mat")
+
+[node name="Body2" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.5, 0)
+mesh = SubResource("block")
+material_override = SubResource("orange_mat")
+
+[node name="Belly" type="MeshInstance3D" parent="."]
+transform = Transform3D(0.1, 0, 0, 0, 0.7, 0, 0, 0, 0.6, 0.5, 1.0, 0.2)
+mesh = SubResource("block")
+material_override = SubResource("cream_mat")
+
+[node name="Head" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.5, 0)
+mesh = SubResource("block")
+material_override = SubResource("orange_mat")
+
+[node name="LeftEye" type="MeshInstance3D" parent="."]
+transform = Transform3D(0.1, 0, 0, 0, 0.3, 0, 0, 0, 0.3, -0.25, 2.6, 0.5)
+mesh = SubResource("block")
+material_override = SubResource("black_mat")
+
+[node name="RightEye" type="MeshInstance3D" parent="."]
+transform = Transform3D(0.1, 0, 0, 0, 0.3, 0, 0, 0, 0.3, 0.25, 2.6, 0.5)
+mesh = SubResource("block")
+material_override = SubResource("black_mat")
+
+[node name="TailBase" type="MeshInstance3D" parent="."]
+transform = Transform3D(0.4, 0, 0, 0, 0.4, 0, 0, 0, 0.8, 0, 0.5, -0.9)
+mesh = SubResource("block")
+material_override = SubResource("orange_mat")
+
+[node name="TailFlame" type="MeshInstance3D" parent="."]
+transform = Transform3D(0.3, 0, 0, 0, 0.5, 0, 0, 0, 0.3, 0, 0.75, -1.45)
+mesh = SubResource("block")
+material_override = SubResource("flame_mat")

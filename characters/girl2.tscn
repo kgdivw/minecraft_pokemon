@@ -1,0 +1,104 @@
+[gd_scene load_steps=7 format=3]
+
+[sub_resource type="StandardMaterial3D" id="skin_mat"]
+albedo_color = Color(0.7, 0.5, 0.35, 1)
+
+[sub_resource type="StandardMaterial3D" id="dress_mat"]
+albedo_color = Color(0.5, 0.3, 0.7, 1)
+
+[sub_resource type="StandardMaterial3D" id="shoes_mat"]
+albedo_color = Color(0.2, 0.2, 0.25, 1)
+
+[sub_resource type="StandardMaterial3D" id="hair_mat"]
+albedo_color = Color(0.15, 0.1, 0.1, 1)
+
+[sub_resource type="StandardMaterial3D" id="eye_mat"]
+albedo_color = Color(0.1, 0.1, 0.1, 1)
+
+[sub_resource type="StandardMaterial3D" id="mouth_mat"]
+albedo_color = Color(0.6, 0.3, 0.35, 1)
+
+[sub_resource type="BoxMesh" id="block"]
+size = Vector3(1, 1, 1)
+
+[node name="Girl2" type="Node3D"]
+
+[node name="LeftLeg" type="MeshInstance3D" parent="."]
+transform = Transform3D(0.35, 0, 0, 0, 0.7, 0, 0, 0, 0.35, -0.18, 0.35, 0)
+mesh = SubResource("block")
+material_override = SubResource("skin_mat")
+
+[node name="RightLeg" type="MeshInstance3D" parent="."]
+transform = Transform3D(0.35, 0, 0, 0, 0.7, 0, 0, 0, 0.35, 0.18, 0.35, 0)
+mesh = SubResource("block")
+material_override = SubResource("skin_mat")
+
+[node name="LeftShoe" type="MeshInstance3D" parent="."]
+transform = Transform3D(0.38, 0, 0, 0, 0.2, 0, 0, 0, 0.45, -0.18, 0.1, 0.05)
+mesh = SubResource("block")
+material_override = SubResource("shoes_mat")
+
+[node name="RightShoe" type="MeshInstance3D" parent="."]
+transform = Transform3D(0.38, 0, 0, 0, 0.2, 0, 0, 0, 0.45, 0.18, 0.1, 0.05)
+mesh = SubResource("block")
+material_override = SubResource("shoes_mat")
+
+[node name="Skirt" type="MeshInstance3D" parent="."]
+transform = Transform3D(0.85, 0, 0, 0, 0.5, 0, 0, 0, 0.6, 0, 0.95, 0)
+mesh = SubResource("block")
+material_override = SubResource("dress_mat")
+
+[node name="Body" type="MeshInstance3D" parent="."]
+transform = Transform3D(0.7, 0, 0, 0, 0.8, 0, 0, 0, 0.45, 0, 1.6, 0)
+mesh = SubResource("block")
+material_override = SubResource("dress_mat")
+
+[node name="LeftArm" type="MeshInstance3D" parent="."]
+transform = Transform3D(0.25, 0, 0, 0, 0.75, 0, 0, 0, 0.25, -0.48, 1.57, 0)
+mesh = SubResource("block")
+material_override = SubResource("skin_mat")
+
+[node name="RightArm" type="MeshInstance3D" parent="."]
+transform = Transform3D(0.25, 0, 0, 0, 0.75, 0, 0, 0, 0.25, 0.48, 1.57, 0)
+mesh = SubResource("block")
+material_override = SubResource("skin_mat")
+
+[node name="Head" type="MeshInstance3D" parent="."]
+transform = Transform3D(0.65, 0, 0, 0, 0.65, 0, 0, 0, 0.65, 0, 2.32, 0)
+mesh = SubResource("block")
+material_override = SubResource("skin_mat")
+
+[node name="Hair" type="MeshInstance3D" parent="."]
+transform = Transform3D(0.7, 0, 0, 0, 0.5, 0, 0, 0, 0.7, 0, 2.9, 0)
+mesh = SubResource("block")
+material_override = SubResource("hair_mat")
+
+[node name="Bun1" type="MeshInstance3D" parent="."]
+transform = Transform3D(0.3, 0, 0, 0, 0.3, 0, 0, 0, 0.3, -0.35, 2.9, 0)
+mesh = SubResource("block")
+material_override = SubResource("hair_mat")
+
+[node name="Bun2" type="MeshInstance3D" parent="."]
+transform = Transform3D(0.3, 0, 0, 0, 0.3, 0, 0, 0, 0.3, 0.35, 2.9, 0)
+mesh = SubResource("block")
+material_override = SubResource("hair_mat")
+
+[node name="LeftEye" type="MeshInstance3D" parent="."]
+transform = Transform3D(0.11, 0, 0, 0, 0.11, 0, 0, 0, 0.05, -0.14, 2.38, 0.31)
+mesh = SubResource("block")
+material_override = SubResource("eye_mat")
+
+[node name="RightEye" type="MeshInstance3D" parent="."]
+transform = Transform3D(0.11, 0, 0, 0, 0.11, 0, 0, 0, 0.05, 0.14, 2.38, 0.31)
+mesh = SubResource("block")
+material_override = SubResource("eye_mat")
+
+[node name="Nose" type="MeshInstance3D" parent="."]
+transform = Transform3D(0.06, 0, 0, 0, 0.08, 0, 0, 0, 0.06, 0, 2.28, 0.32)
+mesh = SubResource("block")
+material_override = SubResource("skin_mat")
+
+[node name="Mouth" type="MeshInstance3D" parent="."]
+transform = Transform3D(0.18, 0, 0, 0, 0.05, 0, 0, 0, 0.05, 0, 2.16, 0.31)
+mesh = SubResource("block")
+material_override = SubResource("mouth_mat")

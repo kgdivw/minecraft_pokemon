@@ -1,0 +1,60 @@
+[gd_scene load_steps=5 format=3]
+
+[sub_resource type="StandardMaterial3D" id="green_mat"]
+albedo_color = Color(0.3, 0.7, 0.5, 1)
+
+[sub_resource type="StandardMaterial3D" id="darkgreen_mat"]
+albedo_color = Color(0.15, 0.45, 0.25, 1)
+
+[sub_resource type="StandardMaterial3D" id="black_mat"]
+albedo_color = Color(0.1, 0.1, 0.1, 1)
+
+[sub_resource type="BoxMesh" id="block"]
+size = Vector3(1, 1, 1)
+
+[node name="Bulbasaur" type="Node3D"]
+
+[node name="Body1" type="MeshInstance3D" parent="."]
+transform = Transform3D(1.2, 0, 0, 0, 1, 0, 0, 0, 1.2, 0, 0.5, 0)
+mesh = SubResource("block")
+material_override = SubResource("green_mat")
+
+[node name="Body2" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 0.8, 0, 0, 0, 1, 0, 1.4, 0)
+mesh = SubResource("block")
+material_override = SubResource("green_mat")
+
+[node name="Head" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 0.9, 0, 0, 0, 0.9, 0, 2.25, 0.2)
+mesh = SubResource("block")
+material_override = SubResource("green_mat")
+
+[node name="LeftEye" type="MeshInstance3D" parent="."]
+transform = Transform3D(0.1, 0, 0, 0, 0.35, 0, 0, 0, 0.35, -0.3, 2.4, 0.65)
+mesh = SubResource("block")
+material_override = SubResource("black_mat")
+
+[node name="RightEye" type="MeshInstance3D" parent="."]
+transform = Transform3D(0.1, 0, 0, 0, 0.35, 0, 0, 0, 0.35, 0.3, 2.4, 0.65)
+mesh = SubResource("block")
+material_override = SubResource("black_mat")
+
+[node name="BulbBase" type="MeshInstance3D" parent="."]
+transform = Transform3D(0.8, 0, 0, 0, 0.6, 0, 0, 0, 0.8, 0, 2.1, -0.1)
+mesh = SubResource("block")
+material_override = SubResource("darkgreen_mat")
+
+[node name="BulbTop" type="MeshInstance3D" parent="."]
+transform = Transform3D(0.5, 0, 0, 0, 0.8, 0, 0, 0, 0.5, 0, 2.8, -0.1)
+mesh = SubResource("block")
+material_override = SubResource("darkgreen_mat")
+
+[node name="Leaf1" type="MeshInstance3D" parent="."]
+transform = Transform3D(0.8, 0, 0, 0, 0.15, 0, 0, 0, 0.3, 0.4, 2.5, -0.1)
+mesh = SubResource("block")
+material_override = SubResource("darkgreen_mat")
+
+[node name="Leaf2" type="MeshInstance3D" parent="."]
+transform = Transform3D(0.8, 0, 0, 0, 0.15, 0, 0, 0, 0.3, -0.4, 2.5, -0.1)
+mesh = SubResource("block")
+material_override = SubResource("darkgreen_mat")

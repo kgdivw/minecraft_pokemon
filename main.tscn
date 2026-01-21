@@ -1,26 +1,104 @@
-[gd_scene load_steps=4 format=3]
+[gd_scene load_steps=6 format=3]
 
-[ext_resource type="PackedScene" path="res://pikachu.tscn" id="1_pikachu"]
-
-[sub_resource type="StandardMaterial3D" id="grid_mat"]
-albedo_color = Color(0.3, 0.7, 0.3, 1)
-
-[sub_resource type="BoxMesh" id="floor_mesh"]
-size = Vector3(20, 0.1, 20)
+[ext_resource type="Script" path="res://player.gd" id="1_player"]
+[ext_resource type="Script" path="res://game_ui.gd" id="2_ui"]
+[ext_resource type="Script" path="res://world_generator.gd" id="3_world"]
+[ext_resource type="Script" path="res://pokemon_spawner.gd" id="4_spawner"]
+[ext_resource type="Script" path="res://camera_follow.gd" id="5_camera"]
 
 [node name="Main" type="Node3D"]
 
-[node name="Floor" type="MeshInstance3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.05, 0)
-mesh = SubResource("floor_mesh")
-material_override = SubResource("grid_mat")
-
-[node name="Pikachu" parent="." instance=ExtResource("1_pikachu")]
+[node name="Player" type="Node3D" parent="."]
+script = ExtResource("1_player")
 
 [node name="Camera3D" type="Camera3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 0.707, 0.707, 0, -0.707, 0.707, 0, 8, 8)
-fov = 60.0
+transform = Transform3D(1, 0, 0, 0, 0.6, 0.8, 0, -0.8, 0.6, 0, 12, 12)
+fov = 55.0
+script = ExtResource("5_camera")
+offset = Vector3(0, 12, 12)
+
+[node name="WorldGenerator" type="Node3D" parent="."]
+script = ExtResource("3_world")
+
+[node name="PokemonSpawner" type="Node" parent="."]
+script = ExtResource("4_spawner")
 
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 0.5, 0.866, 0, -0.866, 0.5, 0, 10, 0)
+transform = Transform3D(1, 0, 0, 0, 0.5, 0.866, 0, -0.866, 0.5, 0, 15, 0)
 shadow_enabled = true
+
+[node name="AmbientLight" type="DirectionalLight3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, -0.5, -0.866, 0, 0.866, -0.5, 0, 10, 0)
+light_color = Color(0.6, 0.7, 0.9, 1)
+light_energy = 0.3
+shadow_enabled = false
+
+[node name="GameUI" type="Control" parent="."]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("2_ui")
+
+[node name="Crosshair" type="Label" parent="GameUI"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -15.0
+offset_top = -15.0
+offset_right = 15.0
+offset_bottom = 15.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_font_sizes/font_size = 24
+text = "+"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="PokemonCount" type="Label" parent="GameUI"]
+layout_mode = 1
+anchors_preset = 0
+offset_left = 20.0
+offset_top = 20.0
+offset_right = 200.0
+offset_bottom = 50.0
+theme_override_font_sizes/font_size = 20
+text = "Gevangen: 0"
+
+[node name="CatchMessage" type="Label" parent="GameUI"]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -150.0
+offset_top = 100.0
+offset_right = 150.0
+offset_bottom = 140.0
+grow_horizontal = 2
+theme_override_font_sizes/font_size = 28
+text = "Pokemon gevangen!"
+horizontal_alignment = 1
+
+[node name="Instructions" type="Label" parent="GameUI"]
+layout_mode = 1
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -200.0
+offset_top = -40.0
+offset_right = 200.0
+offset_bottom = -10.0
+grow_horizontal = 2
+grow_vertical = 0
+theme_override_font_sizes/font_size = 14
+text = "Pijltjestoetsen om te bewegen. Loop naar Pokemon om te vangen!"
+horizontal_alignment = 1
+
+[connection signal="pokemon_caught" from="Player" to="GameUI" method="show_catch_message"]

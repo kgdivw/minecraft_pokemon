@@ -1,0 +1,50 @@
+[gd_scene load_steps=5 format=3]
+
+[sub_resource type="StandardMaterial3D" id="blue_mat"]
+albedo_color = Color(0.3, 0.6, 0.85, 1)
+
+[sub_resource type="StandardMaterial3D" id="cream_mat"]
+albedo_color = Color(0.9, 0.85, 0.65, 1)
+
+[sub_resource type="StandardMaterial3D" id="brown_mat"]
+albedo_color = Color(0.55, 0.35, 0.2, 1)
+
+[sub_resource type="BoxMesh" id="block"]
+size = Vector3(1, 1, 1)
+
+[node name="Squirtle" type="Node3D"]
+
+[node name="Shell" type="MeshInstance3D" parent="."]
+transform = Transform3D(1.1, 0, 0, 0, 1.2, 0, 0, 0, 0.8, 0, 0.9, -0.2)
+mesh = SubResource("block")
+material_override = SubResource("brown_mat")
+
+[node name="Body" type="MeshInstance3D" parent="."]
+transform = Transform3D(0.9, 0, 0, 0, 1, 0, 0, 0, 0.6, 0, 0.8, 0.35)
+mesh = SubResource("block")
+material_override = SubResource("cream_mat")
+
+[node name="Head" type="MeshInstance3D" parent="."]
+transform = Transform3D(0.9, 0, 0, 0, 0.9, 0, 0, 0, 0.9, 0, 2.0, 0.1)
+mesh = SubResource("block")
+material_override = SubResource("blue_mat")
+
+[node name="LeftEye" type="MeshInstance3D" parent="."]
+transform = Transform3D(0.1, 0, 0, 0, 0.25, 0, 0, 0, 0.25, -0.2, 2.15, 0.55)
+mesh = SubResource("block")
+material_override = SubResource("brown_mat")
+
+[node name="RightEye" type="MeshInstance3D" parent="."]
+transform = Transform3D(0.1, 0, 0, 0, 0.25, 0, 0, 0, 0.25, 0.2, 2.15, 0.55)
+mesh = SubResource("block")
+material_override = SubResource("brown_mat")
+
+[node name="Tail" type="MeshInstance3D" parent="."]
+transform = Transform3D(0.3, 0, 0, 0, 0.6, 0, 0, 0, 0.3, 0, 0.5, -0.7)
+mesh = SubResource("block")
+material_override = SubResource("blue_mat")
+
+[node name="TailCurl" type="MeshInstance3D" parent="."]
+transform = Transform3D(0.25, 0, 0, 0, 0.25, 0, 0, 0, 0.4, 0, 0.9, -0.85)
+mesh = SubResource("block")
+material_override = SubResource("blue_mat")

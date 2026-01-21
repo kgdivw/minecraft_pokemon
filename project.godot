@@ -11,8 +11,12 @@ config_version=5
 [application]
 
 config/name="Minecraft Pokemon"
-run/main_scene="res://main.tscn"
+run/main_scene="res://character_select.tscn"
 config/features=PackedStringArray("4.5", "Forward Plus")
+
+[autoload]
+
+GameData="*res://game_data.gd"
 
 [display]
 
