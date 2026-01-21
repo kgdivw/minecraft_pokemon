@@ -1,0 +1,65 @@
+[gd_scene load_steps=5 format=3]
+
+[ext_resource type="Script" path="res://mobs/mob_ai.gd" id="1_ai"]
+
+[sub_resource type="StandardMaterial3D" id="body_mat"]
+albedo_color = Color(0.4, 0.25, 0.15, 1)
+
+[sub_resource type="StandardMaterial3D" id="spots_mat"]
+albedo_color = Color(0.9, 0.9, 0.85, 1)
+
+[sub_resource type="StandardMaterial3D" id="nose_mat"]
+albedo_color = Color(0.6, 0.4, 0.35, 1)
+
+[sub_resource type="BoxMesh" id="block"]
+size = Vector3(1, 1, 1)
+
+[node name="Cow" type="Node3D" groups=["mobs", "friendly_mobs"]]
+script = ExtResource("1_ai")
+mob_type = "cow"
+drop_item = "beef"
+
+[node name="Body" type="MeshInstance3D" parent="."]
+transform = Transform3D(1.4, 0, 0, 0, 1, 0, 0, 0, 0.8, 0, 0.7, 0)
+mesh = SubResource("block")
+material_override = SubResource("body_mat")
+
+[node name="Spot1" type="MeshInstance3D" parent="."]
+transform = Transform3D(0.4, 0, 0, 0, 0.3, 0, 0, 0, 0.1, 0.3, 0.9, 0.4)
+mesh = SubResource("block")
+material_override = SubResource("spots_mat")
+
+[node name="Spot2" type="MeshInstance3D" parent="."]
+transform = Transform3D(0.3, 0, 0, 0, 0.4, 0, 0, 0, 0.1, -0.4, 0.6, 0.4)
+mesh = SubResource("block")
+material_override = SubResource("spots_mat")
+
+[node name="Head" type="MeshInstance3D" parent="."]
+transform = Transform3D(0.6, 0, 0, 0, 0.6, 0, 0, 0, 0.6, 0, 1.0, 0.6)
+mesh = SubResource("block")
+material_override = SubResource("body_mat")
+
+[node name="Nose" type="MeshInstance3D" parent="."]
+transform = Transform3D(0.4, 0, 0, 0, 0.25, 0, 0, 0, 0.2, 0, 0.85, 0.95)
+mesh = SubResource("block")
+material_override = SubResource("nose_mat")
+
+[node name="LeftLeg1" type="MeshInstance3D" parent="."]
+transform = Transform3D(0.2, 0, 0, 0, 0.4, 0, 0, 0, 0.2, -0.5, 0.2, 0.25)
+mesh = SubResource("block")
+material_override = SubResource("body_mat")
+
+[node name="LeftLeg2" type="MeshInstance3D" parent="."]
+transform = Transform3D(0.2, 0, 0, 0, 0.4, 0, 0, 0, 0.2, -0.5, 0.2, -0.25)
+mesh = SubResource("block")
+material_override = SubResource("body_mat")
+
+[node name="RightLeg1" type="MeshInstance3D" parent="."]
+transform = Transform3D(0.2, 0, 0, 0, 0.4, 0, 0, 0, 0.2, 0.5, 0.2, 0.25)
+mesh = SubResource("block")
+material_override = SubResource("body_mat")
+
+[node name="RightLeg2" type="MeshInstance3D" parent="."]
+transform = Transform3D(0.2, 0, 0, 0, 0.4, 0, 0, 0, 0.2, 0.5, 0.2, -0.25)
+mesh = SubResource("block")
+material_override = SubResource("body_mat")

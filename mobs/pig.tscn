@@ -1,0 +1,52 @@
+[gd_scene load_steps=4 format=3]
+
+[ext_resource type="Script" path="res://mobs/mob_ai.gd" id="1_ai"]
+
+[sub_resource type="StandardMaterial3D" id="body_mat"]
+albedo_color = Color(0.95, 0.75, 0.7, 1)
+
+[sub_resource type="StandardMaterial3D" id="nose_mat"]
+albedo_color = Color(0.85, 0.55, 0.5, 1)
+
+[sub_resource type="BoxMesh" id="block"]
+size = Vector3(1, 1, 1)
+
+[node name="Pig" type="Node3D" groups=["mobs", "friendly_mobs"]]
+script = ExtResource("1_ai")
+mob_type = "pig"
+drop_item = "pork"
+
+[node name="Body" type="MeshInstance3D" parent="."]
+transform = Transform3D(1.0, 0, 0, 0, 0.7, 0, 0, 0, 0.6, 0, 0.55, 0)
+mesh = SubResource("block")
+material_override = SubResource("body_mat")
+
+[node name="Head" type="MeshInstance3D" parent="."]
+transform = Transform3D(0.5, 0, 0, 0, 0.5, 0, 0, 0, 0.5, 0, 0.75, 0.45)
+mesh = SubResource("block")
+material_override = SubResource("body_mat")
+
+[node name="Snout" type="MeshInstance3D" parent="."]
+transform = Transform3D(0.25, 0, 0, 0, 0.2, 0, 0, 0, 0.15, 0, 0.65, 0.75)
+mesh = SubResource("block")
+material_override = SubResource("nose_mat")
+
+[node name="LeftLeg1" type="MeshInstance3D" parent="."]
+transform = Transform3D(0.15, 0, 0, 0, 0.3, 0, 0, 0, 0.15, -0.35, 0.15, 0.18)
+mesh = SubResource("block")
+material_override = SubResource("body_mat")
+
+[node name="LeftLeg2" type="MeshInstance3D" parent="."]
+transform = Transform3D(0.15, 0, 0, 0, 0.3, 0, 0, 0, 0.15, -0.35, 0.15, -0.18)
+mesh = SubResource("block")
+material_override = SubResource("body_mat")
+
+[node name="RightLeg1" type="MeshInstance3D" parent="."]
+transform = Transform3D(0.15, 0, 0, 0, 0.3, 0, 0, 0, 0.15, 0.35, 0.15, 0.18)
+mesh = SubResource("block")
+material_override = SubResource("body_mat")
+
+[node name="RightLeg2" type="MeshInstance3D" parent="."]
+transform = Transform3D(0.15, 0, 0, 0, 0.3, 0, 0, 0, 0.15, 0.35, 0.15, -0.18)
+mesh = SubResource("block")
+material_override = SubResource("body_mat")

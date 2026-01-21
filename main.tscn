@@ -1,10 +1,13 @@
-[gd_scene load_steps=6 format=3]
+[gd_scene load_steps=9 format=3]
 
 [ext_resource type="Script" path="res://player.gd" id="1_player"]
 [ext_resource type="Script" path="res://game_ui.gd" id="2_ui"]
 [ext_resource type="Script" path="res://world_generator.gd" id="3_world"]
-[ext_resource type="Script" path="res://pokemon_spawner.gd" id="4_spawner"]
+[ext_resource type="Script" path="res://pokemon_spawner.gd" id="4_pokemon_spawner"]
 [ext_resource type="Script" path="res://camera_follow.gd" id="5_camera"]
+[ext_resource type="Script" path="res://day_night_cycle.gd" id="6_daynight"]
+[ext_resource type="Script" path="res://mob_spawner.gd" id="7_mob_spawner"]
+[ext_resource type="Script" path="res://inventory_ui.gd" id="8_inventory"]
 
 [node name="Main" type="Node3D"]
 
@@ -21,7 +24,14 @@ offset = Vector3(0, 12, 12)
 script = ExtResource("3_world")
 
 [node name="PokemonSpawner" type="Node" parent="."]
-script = ExtResource("4_spawner")
+script = ExtResource("4_pokemon_spawner")
+
+[node name="MobSpawner" type="Node" parent="."]
+script = ExtResource("7_mob_spawner")
+
+[node name="DayNightCycle" type="Node3D" parent="."]
+script = ExtResource("6_daynight")
+day_length_seconds = 120.0
 
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 0.5, 0.866, 0, -0.866, 0.5, 0, 15, 0)
@@ -42,33 +52,29 @@ grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("2_ui")
 
-[node name="Crosshair" type="Label" parent="GameUI"]
-layout_mode = 1
-anchors_preset = 8
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-offset_left = -15.0
-offset_top = -15.0
-offset_right = 15.0
-offset_bottom = 15.0
-grow_horizontal = 2
-grow_vertical = 2
-theme_override_font_sizes/font_size = 24
-text = "+"
-horizontal_alignment = 1
-vertical_alignment = 1
-
 [node name="PokemonCount" type="Label" parent="GameUI"]
 layout_mode = 1
 anchors_preset = 0
 offset_left = 20.0
 offset_top = 20.0
-offset_right = 200.0
+offset_right = 300.0
 offset_bottom = 50.0
-theme_override_font_sizes/font_size = 20
-text = "Gevangen: 0"
+theme_override_font_sizes/font_size = 18
+text = "Pokemon: 0 | Hout: 0"
+
+[node name="TimeLabel" type="Label" parent="GameUI"]
+layout_mode = 1
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -150.0
+offset_top = 20.0
+offset_right = -20.0
+offset_bottom = 50.0
+grow_horizontal = 0
+theme_override_font_sizes/font_size = 18
+text = "12:00 (Dag)"
+horizontal_alignment = 2
 
 [node name="CatchMessage" type="Label" parent="GameUI"]
 layout_mode = 1
@@ -76,29 +82,163 @@ anchors_preset = 5
 anchor_left = 0.5
 anchor_right = 0.5
 offset_left = -150.0
-offset_top = 100.0
+offset_top = 80.0
 offset_right = 150.0
-offset_bottom = 140.0
+offset_bottom = 120.0
 grow_horizontal = 2
-theme_override_font_sizes/font_size = 28
+theme_override_font_sizes/font_size = 24
 text = "Pokemon gevangen!"
 horizontal_alignment = 1
 
-[node name="Instructions" type="Label" parent="GameUI"]
+[node name="Hotbar" type="Control" parent="GameUI"]
 layout_mode = 1
 anchors_preset = 7
 anchor_left = 0.5
 anchor_top = 1.0
 anchor_right = 0.5
 anchor_bottom = 1.0
-offset_left = -200.0
-offset_top = -40.0
-offset_right = 200.0
+offset_left = -250.0
+offset_top = -80.0
+offset_right = 250.0
 offset_bottom = -10.0
 grow_horizontal = 2
 grow_vertical = 0
-theme_override_font_sizes/font_size = 14
-text = "Pijltjestoetsen om te bewegen. Loop naar Pokemon om te vangen!"
+
+[node name="Instructions" type="Label" parent="GameUI"]
+layout_mode = 1
+anchors_preset = 0
+offset_left = 20.0
+offset_top = 55.0
+offset_right = 500.0
+offset_bottom = 75.0
+theme_override_font_sizes/font_size = 12
+text = "Pijltjes: bewegen | Klik: aanval | Spatie: spring/omhoog | Shift: omlaag | C: creative | E: eet | TAB: inventory"
+
+[node name="HealthBar" type="Control" parent="GameUI"]
+layout_mode = 1
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -250.0
+offset_top = -115.0
+offset_right = -20.0
+offset_bottom = -85.0
+grow_horizontal = 2
+grow_vertical = 0
+
+[node name="HungerBar" type="Control" parent="GameUI"]
+layout_mode = 1
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = 20.0
+offset_top = -115.0
+offset_right = 250.0
+offset_bottom = -85.0
+grow_horizontal = 2
+grow_vertical = 0
+
+[node name="ModeLabel" type="Label" parent="GameUI"]
+layout_mode = 1
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -150.0
+offset_top = 50.0
+offset_right = -20.0
+offset_bottom = 80.0
+grow_horizontal = 0
+theme_override_font_sizes/font_size = 16
+theme_override_colors/font_color = Color(1, 1, 0.5, 1)
+text = "SURVIVAL"
+horizontal_alignment = 2
+
+[node name="InventoryUI" type="Control" parent="."]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+process_mode = 3
+script = ExtResource("8_inventory")
+
+[node name="Panel" type="Panel" parent="InventoryUI"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -300.0
+offset_top = -200.0
+offset_right = 300.0
+offset_bottom = 200.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Title" type="Label" parent="InventoryUI/Panel"]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -100.0
+offset_top = 10.0
+offset_right = 100.0
+offset_bottom = 40.0
+grow_horizontal = 2
+theme_override_font_sizes/font_size = 24
+text = "Inventory"
 horizontal_alignment = 1
+
+[node name="ItemsLabel" type="Label" parent="InventoryUI/Panel"]
+layout_mode = 0
+offset_left = 20.0
+offset_top = 50.0
+offset_right = 200.0
+offset_bottom = 75.0
+theme_override_font_sizes/font_size = 16
+text = "Items:"
+
+[node name="ItemsGrid" type="GridContainer" parent="InventoryUI/Panel"]
+layout_mode = 0
+offset_left = 20.0
+offset_top = 80.0
+offset_right = 580.0
+offset_bottom = 180.0
+columns = 6
+
+[node name="PokemonLabel" type="Label" parent="InventoryUI/Panel"]
+layout_mode = 0
+offset_left = 20.0
+offset_top = 190.0
+offset_right = 200.0
+offset_bottom = 215.0
+theme_override_font_sizes/font_size = 16
+text = "Pokemon:"
+
+[node name="PokemonGrid" type="GridContainer" parent="InventoryUI/Panel"]
+layout_mode = 0
+offset_left = 20.0
+offset_top = 220.0
+offset_right = 580.0
+offset_bottom = 320.0
+columns = 6
+
+[node name="CloseButton" type="Button" parent="InventoryUI/Panel"]
+layout_mode = 1
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -40.0
+offset_top = 10.0
+offset_right = -10.0
+offset_bottom = 40.0
+grow_horizontal = 0
+text = "X"
 
 [connection signal="pokemon_caught" from="Player" to="GameUI" method="show_catch_message"]
