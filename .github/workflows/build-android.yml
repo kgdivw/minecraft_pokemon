@@ -5,7 +5,7 @@ on:
     branches: [master, main]
     tags:
       - 'v*'
-  workflow_dispatch:  # Handmatig starten mogelijk
+  workflow_dispatch:
 
 env:
   GODOT_VERSION: 4.5.1
@@ -24,15 +24,14 @@ jobs:
         with:
           lfs: true
 
-      - name: Setup
+      - name: Setup export templates
         run: |
           mkdir -v -p ~/.local/share/godot/export_templates/
           mv /root/.local/share/godot/export_templates/${GODOT_VERSION}.stable ~/.local/share/godot/export_templates/${GODOT_VERSION}.stable
 
-      - name: Setup Android SDK
+      - name: Setup Android SDK and JDK
         run: |
-          apt-get update
-          apt-get install -y openjdk-17-jdk wget unzip
+          apt-get update && apt-get install -y openjdk-17-jdk wget unzip
           mkdir -p /root/android-sdk/cmdline-tools
           cd /root/android-sdk/cmdline-tools
           wget -q https://dl.google.com/android/repository/commandlinetools-linux-11076708_latest.zip -O tools.zip
@@ -42,16 +41,17 @@ jobs:
           yes | /root/android-sdk/cmdline-tools/latest/bin/sdkmanager --licenses || true
           /root/android-sdk/cmdline-tools/latest/bin/sdkmanager "platform-tools" "build-tools;34.0.0" "platforms;android-34"
 
-      - name: Setup Debug Keystore
+      - name: Create debug keystore
         run: |
-          mkdir -p ~/.android
-          keytool -genkey -v -keystore ~/.android/debug.keystore -storepass android -alias androiddebugkey -keypass android -keyalg RSA -keysize 2048 -validity 10000 -dname "CN=Debug,O=Debug,C=US"
+          mkdir -p /root/.android
+          keytool -genkey -v -keystore /root/.android/debug.keystore -storepass android -alias androiddebugkey -keypass android -keyalg RSA -keysize 2048 -validity 10000 -dname "CN=Debug,O=Debug,C=US"
 
-      - name: Configure Godot Editor Settings
+      - name: Configure Godot for Android
         run: |
           mkdir -p ~/.config/godot
-          cat > ~/.config/godot/editor_settings-4.3.tres << EOF
+          cat > ~/.config/godot/editor_settings-4.tres << 'EOF'
           [gd_resource type="EditorSettings" format=3]
+
           [resource]
           export/android/java_sdk_path = "/usr/lib/jvm/java-17-openjdk-amd64"
           export/android/android_sdk_path = "/root/android-sdk"
@@ -60,43 +60,54 @@ jobs:
           export/android/debug_keystore_pass = "android"
           EOF
 
-      - name: Create export presets if not exists
+      - name: Create export presets
         run: |
-          if [ ! -f export_presets.cfg ]; then
-            cat > export_presets.cfg << 'EOF'
+          cat > export_presets.cfg << 'PRESETS'
           [preset.0]
+
           name="Android"
           platform="Android"
           runnable=true
+          advanced_options=false
           dedicated_server=false
           custom_features=""
           export_filter="all_resources"
           include_filter=""
           exclude_filter=""
-          export_path="build/android/${{ env.EXPORT_NAME }}.apk"
+          export_path="build/android/minecraft-pokemon.apk"
           encryption_include_filters=""
           encryption_exclude_filters=""
           encrypt_pck=false
           encrypt_directory=false
+          script_export_mode=2
 
           [preset.0.options]
+
           custom_template/debug=""
           custom_template/release=""
           gradle_build/use_gradle_build=false
           gradle_build/export_format=0
+          gradle_build/min_sdk=""
+          gradle_build/target_sdk=""
           architectures/armeabi-v7a=true
           architectures/arm64-v8a=true
           architectures/x86=false
           architectures/x86_64=false
           version/code=1
-          version/name="1.0.0"
-          package/unique_name="com.example.minecraftpokemon"
+          version/name="0.0.1"
+          package/unique_name="com.minecraftpokemon.game"
           package/name="Minecraft Pokemon"
           package/signed=true
           package/app_category=0
+          package/retain_data_on_uninstall=false
+          package/exclude_from_recents=false
+          package/show_in_android_tv=false
+          package/show_in_app_library=true
+          package/show_as_launcher_app=false
           launcher_icons/main_192x192=""
           launcher_icons/adaptive_foreground_432x432=""
           launcher_icons/adaptive_background_432x432=""
+          launcher_icons/adaptive_monochrome_432x432=""
           graphics/opengl_debug=false
           xr_features/xr_mode=0
           screen/immersive_mode=true
@@ -256,19 +267,24 @@ jobs:
           permissions/write_social_stream=false
           permissions/write_sync_settings=false
           permissions/write_user_dictionary=false
-          EOF
-          fi
+          PRESETS
+
+      - name: Import project
+        run: |
+          godot --headless --import
 
       - name: Build APK
         run: |
           mkdir -p build/android
-          godot --headless --verbose --export-debug "Android" build/android/${EXPORT_NAME}.apk
+          godot --headless --export-debug "Android" build/android/${EXPORT_NAME}.apk 2>&1 || true
+          ls -la build/android/ || echo "Build folder check"
 
       - name: Upload APK artifact
         uses: actions/upload-artifact@v4
         with:
           name: android-apk
           path: build/android/*.apk
+          if-no-files-found: error
           retention-days: 30
 
       - name: Create Release (on tag)
@@ -276,5 +292,6 @@ jobs:
         uses: softprops/action-gh-release@v1
         with:
           files: build/android/*.apk
+          fail_on_unmatched_files: false
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
