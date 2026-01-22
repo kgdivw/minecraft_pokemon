@@ -15,31 +15,48 @@ var change_direction_timer: float = 0.0
 var player: Node3D = null
 var burn_timer: float = 0.0
 var is_burning: bool = false
+var attack_cooldown: float = 0.0
 
 func _ready() -> void:
 	change_direction()
+	if is_hostile:
+		print("Zombie gespawned! Hostile: ", is_hostile, " Speed: ", speed)
 
 func _process(delta: float) -> void:
-	if not player:
+	# Zoek speler op verschillende manieren
+	if not player or not is_instance_valid(player):
 		player = get_tree().get_first_node_in_group("player")
-		if not player:
-			var main = get_parent()
-			if main:
-				player = main.get_node_or_null("Player")
+	if not player or not is_instance_valid(player):
+		var nodes = get_tree().get_nodes_in_group("player")
+		if nodes.size() > 0:
+			player = nodes[0]
+	if not player or not is_instance_valid(player):
+		var main = get_parent()
+		if main:
+			player = main.get_node_or_null("Player")
+
+	# Attack cooldown
+	if attack_cooldown > 0:
+		attack_cooldown -= delta
 
 	# Zombies verbranden overdag
 	if burns_in_sunlight:
 		check_sunlight_burn(delta)
 
-	if is_hostile and player:
+	# Hostile mobs jagen op de speler
+	if is_hostile and player and is_instance_valid(player):
 		var dist = global_position.distance_to(player.global_position)
 		if dist < detection_range:
 			chase_player(delta)
-			# Aanval speler als dichtbij
-			if dist < 1.5:
+			if dist < 1.8:
 				attack_player()
 			return
+		else:
+			# Buiten detectie range - wander richting speler
+			wander(delta)
+			return
 
+	# Niet hostile of geen speler - gewoon wandelen
 	wander(delta)
 
 func check_sunlight_burn(delta: float) -> void:
@@ -54,25 +71,23 @@ func check_sunlight_burn(delta: float) -> void:
 			is_burning = true
 			burn_timer += delta
 
-			# Brand effect - wordt rood
-			modulate = Color(1.5, 0.5, 0.3)
-
 			# Schade elke 0.5 seconden
 			if burn_timer >= 0.5:
 				burn_timer = 0.0
 				take_damage(1)
+				print("Zombie verbrandt!")
 		else:
 			is_burning = false
-			modulate = Color(1, 1, 1)
 
 func wander(delta: float) -> void:
 	change_direction_timer -= delta
 	if change_direction_timer <= 0:
 		change_direction()
-
-	position += direction * speed * delta
+		if is_hostile:
+			print("Zombie nieuwe richting: ", direction, " speed: ", speed)
 
 	if direction.length() > 0:
+		position += direction * speed * delta
 		var target_angle = atan2(direction.x, direction.z)
 		rotation.y = lerp_angle(rotation.y, target_angle, 5 * delta)
 
@@ -90,8 +105,13 @@ func chase_player(delta: float) -> void:
 	rotation.y = lerp_angle(rotation.y, target_angle, 5 * delta)
 
 func attack_player() -> void:
+	if attack_cooldown > 0:
+		return
+
 	if player and player.has_method("take_damage"):
+		attack_cooldown = 1.0  # 1 seconde tussen aanvallen
 		player.take_damage(attack_damage)
+		print("Zombie valt aan!")
 
 func change_direction() -> void:
 	if randf() < 0.3:
