@@ -28,6 +28,7 @@ jobs:
         run: |
           mkdir -v -p ~/.local/share/godot/export_templates/
           mv /root/.local/share/godot/export_templates/${GODOT_VERSION}.stable ~/.local/share/godot/export_templates/${GODOT_VERSION}.stable
+          ls -la ~/.local/share/godot/export_templates/${GODOT_VERSION}.stable/
 
       - name: Setup Android SDK and JDK
         run: |
@@ -40,32 +41,46 @@ jobs:
           rm tools.zip
           yes | /root/android-sdk/cmdline-tools/latest/bin/sdkmanager --licenses || true
           /root/android-sdk/cmdline-tools/latest/bin/sdkmanager "platform-tools" "build-tools;34.0.0" "platforms;android-34"
+          echo "Android SDK installed at /root/android-sdk"
+          ls -la /root/android-sdk/
 
       - name: Create debug keystore
         run: |
           mkdir -p /root/.android
           keytool -genkey -v -keystore /root/.android/debug.keystore -storepass android -alias androiddebugkey -keypass android -keyalg RSA -keysize 2048 -validity 10000 -dname "CN=Debug,O=Debug,C=US"
+          echo "Keystore created:"
+          ls -la /root/.android/
 
       - name: Configure Godot for Android
         run: |
           mkdir -p ~/.config/godot
-          echo '[gd_resource type="EditorSettings" format=3]' > ~/.config/godot/editor_settings-4.tres
-          echo '' >> ~/.config/godot/editor_settings-4.tres
-          echo '[resource]' >> ~/.config/godot/editor_settings-4.tres
-          echo 'export/android/java_sdk_path = "/usr/lib/jvm/java-17-openjdk-amd64"' >> ~/.config/godot/editor_settings-4.tres
-          echo 'export/android/android_sdk_path = "/root/android-sdk"' >> ~/.config/godot/editor_settings-4.tres
-          echo 'export/android/debug_keystore = "/root/.android/debug.keystore"' >> ~/.config/godot/editor_settings-4.tres
-          echo 'export/android/debug_keystore_user = "androiddebugkey"' >> ~/.config/godot/editor_settings-4.tres
-          echo 'export/android/debug_keystore_pass = "android"' >> ~/.config/godot/editor_settings-4.tres
+          printf '[gd_resource type="EditorSettings" format=3]\n\n[resource]\nexport/android/java_sdk_path = "/usr/lib/jvm/java-17-openjdk-amd64"\nexport/android/android_sdk_path = "/root/android-sdk"\nexport/android/debug_keystore = "/root/.android/debug.keystore"\nexport/android/debug_keystore_user = "androiddebugkey"\nexport/android/debug_keystore_pass = "android"\n' > ~/.config/godot/editor_settings-4.tres
+          echo "Editor settings created:"
           cat ~/.config/godot/editor_settings-4.tres
+          echo ""
+          echo "Java path check:"
+          ls -la /usr/lib/jvm/ || true
+
+      - name: Debug export preset
+        run: |
+          echo "Export presets content:"
+          cat export_presets.cfg
+          echo ""
+          echo "Project files:"
+          ls -la
 
       - name: Import project
-        run: godot --headless --import || true
+        run: godot --headless --import 2>&1 || true
+
+      - name: List available export presets
+        run: |
+          godot --headless --list-exports 2>&1 || echo "list-exports not available"
 
       - name: Build APK
         run: |
           mkdir -p build/android
-          godot --headless --verbose --export-debug "Android" build/android/${EXPORT_NAME}.apk
+          godot --headless --verbose --export-debug "Android" build/android/${EXPORT_NAME}.apk 2>&1
+          echo "Build output:"
           ls -la build/android/
 
       - name: Upload APK artifact
