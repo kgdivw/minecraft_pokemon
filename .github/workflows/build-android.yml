@@ -72,10 +72,6 @@ jobs:
       - name: Import project
         run: godot --headless --import 2>&1 || true
 
-      - name: List available export presets
-        run: |
-          godot --headless --list-exports 2>&1 || echo "list-exports not available"
-
       - name: Build APK
         run: |
           mkdir -p build/android
