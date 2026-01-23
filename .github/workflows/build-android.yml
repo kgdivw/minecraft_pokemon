@@ -7,69 +7,27 @@ on:
       - 'v*'
   workflow_dispatch:
 
-env:
-  GODOT_VERSION: 4.5.1
-  EXPORT_NAME: minecraft-pokemon
-
 jobs:
-  export-android:
+  android-export:
     name: Android Export
     runs-on: ubuntu-latest
-    container:
-      image: barichello/godot-ci:4.5.1
 
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+
+      - name: Godot Android Export
+        uses: dulvui/godot-android-export@v4
         with:
-          lfs: true
+          godot-version: 4.5.1
 
-      - name: Check environment
-        run: |
-          echo "HOME=$HOME"
-          echo "ANDROID_HOME=$ANDROID_HOME"
-          ls -la /usr/lib/android-sdk/ || true
-          ls -la /usr/lib/android-sdk/build-tools/ || true
-          ls -la /root/.local/share/godot/export_templates/ || true
-
-      - name: Create debug keystore
-        run: |
-          mkdir -p /root/.android
-          keytool -genkey -v -keystore /root/.android/debug.keystore -storepass android -alias androiddebugkey -keypass android -keyalg RSA -keysize 2048 -validity 10000 -dname "CN=Debug,O=Debug,C=US"
-
-      - name: Configure Godot for Android
-        run: |
-          mkdir -p /root/.config/godot
-          echo '[gd_resource type="EditorSettings" format=3]' > /root/.config/godot/editor_settings-4.5.tres
-          echo '' >> /root/.config/godot/editor_settings-4.5.tres
-          echo '[resource]' >> /root/.config/godot/editor_settings-4.5.tres
-          echo 'export/android/java_sdk_path = "/usr/lib/jvm/java-17-openjdk-amd64"' >> /root/.config/godot/editor_settings-4.5.tres
-          echo 'export/android/android_sdk_path = "/usr/lib/android-sdk"' >> /root/.config/godot/editor_settings-4.5.tres
-          echo 'export/android/debug_keystore = "/root/.android/debug.keystore"' >> /root/.config/godot/editor_settings-4.5.tres
-          echo 'export/android/debug_keystore_user = "androiddebugkey"' >> /root/.config/godot/editor_settings-4.5.tres
-          echo 'export/android/debug_keystore_pass = "android"' >> /root/.config/godot/editor_settings-4.5.tres
-          echo "Created editor settings:"
-          cat /root/.config/godot/editor_settings-4.5.tres
-
-      - name: Import project
-        run: godot --headless --import 2>&1 || true
-        env:
-          HOME: /root
-
-      - name: Build APK
-        run: |
-          mkdir -p build/android
-          godot --headless --verbose --export-debug "Android" build/android/${EXPORT_NAME}.apk 2>&1
-          echo "Build output:"
-          ls -la build/android/
-        env:
-          HOME: /root
-
-      - name: Upload APK artifact
+      - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
           name: android-apk
-          path: build/android/*.apk
+          path: |
+            *.apk
+            **/*.apk
           if-no-files-found: warn
           retention-days: 30
 
@@ -77,7 +35,7 @@ jobs:
         if: startsWith(github.ref, 'refs/tags/')
         uses: softprops/action-gh-release@v1
         with:
-          files: build/android/*.apk
+          files: "*.apk"
           fail_on_unmatched_files: false
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
