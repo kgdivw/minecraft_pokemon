@@ -25,6 +25,31 @@ jobs:
           distribution: 'temurin'
           java-version: '17'
 
+      - name: Create debug keystore
+        run: |
+          mkdir -p ~/.android
+          keytool -genkey -v -keystore ~/.android/debug.keystore -storepass android -alias androiddebugkey -keypass android -keyalg RSA -keysize 2048 -validity 10000 -dname "CN=Android Debug,O=Android,C=US" -noprompt
+
+      - name: Configure export credentials
+        run: |
+          cat > export_credentials.cfg << 'EOF'
+          [preset.0]
+
+          script_encryption_key=""
+
+          [preset.0.options]
+
+          keystore/debug="$HOME/.android/debug.keystore"
+          keystore/debug_user="androiddebugkey"
+          keystore/debug_password="android"
+          keystore/release=""
+          keystore/release_user=""
+          keystore/release_password=""
+          EOF
+          # Replace $HOME with actual path
+          sed -i "s|\$HOME|$HOME|g" export_credentials.cfg
+          cat export_credentials.cfg
+
       - name: Godot Export
         id: export
         uses: firebelley/godot-export@v6.0.0
