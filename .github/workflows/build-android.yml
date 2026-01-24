@@ -34,20 +34,16 @@ jobs:
         run: |
           cat > export_credentials.cfg << 'EOF'
           [preset.0]
-
           script_encryption_key=""
-
           [preset.0.options]
-
-          keystore/debug="$HOME/.android/debug.keystore"
+          keystore/debug="/home/runner/.android/debug.keystore"
           keystore/debug_user="androiddebugkey"
           keystore/debug_password="android"
           keystore/release=""
           keystore/release_user=""
           keystore/release_password=""
           EOF
-          # Replace $HOME with actual path
-          sed -i "s|\$HOME|$HOME|g" export_credentials.cfg
+          sed -i 's/^          //' export_credentials.cfg
           cat export_credentials.cfg
 
       - name: Godot Export
