@@ -25,13 +25,27 @@ jobs:
           distribution: 'temurin'
           java-version: '17'
 
-      - name: Create debug keystore
+      - name: Create debug keystore and configure Godot
         run: |
+          # Create debug keystore
           mkdir -p ~/.android
           keytool -genkey -v -keystore ~/.android/debug.keystore -storepass android -alias androiddebugkey -keypass android -keyalg RSA -keysize 2048 -validity 10000 -dname "CN=Android Debug,O=Android,C=US" -noprompt
 
-      - name: Configure export credentials
-        run: |
+          # Create editor settings with Android SDK and keystore
+          mkdir -p ~/.config/godot
+          cat > ~/.config/godot/editor_settings-4.tres << 'EDITOR'
+          [gd_resource type="EditorSettings" format=3]
+
+          [resource]
+          export/android/android_sdk_path = "/usr/local/lib/android/sdk"
+          export/android/debug_keystore = "/home/runner/.android/debug.keystore"
+          export/android/debug_keystore_user = "androiddebugkey"
+          export/android/debug_keystore_pass = "android"
+          EDITOR
+          sed -i 's/^          //' ~/.config/godot/editor_settings-4.tres
+          cat ~/.config/godot/editor_settings-4.tres
+
+          # Also create export_credentials.cfg
           cat > export_credentials.cfg << 'EOF'
           [preset.0]
           script_encryption_key=""
