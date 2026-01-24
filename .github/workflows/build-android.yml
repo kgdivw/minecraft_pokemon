@@ -61,6 +61,9 @@ jobs:
           export/android/debug_keystore_pass = "android"
           EOF
           sed -i 's/^          //' ~/.config/godot/editor_settings-4.tres
+          echo "=== Editor settings content ==="
+          cat ~/.config/godot/editor_settings-4.tres
+          echo "=== End editor settings ==="
 
       - name: Install Android build template
         run: |
@@ -69,6 +72,7 @@ jobs:
           touch android/build/.gdignore
           echo "${GODOT_VERSION}.stable" > android/.build_version
           unzip ~/.local/share/godot/export_templates/${GODOT_VERSION}.stable/android_source.zip -d android/build
+          chmod +x android/build/gradlew
 
       - name: Import project
         run: timeout 60 godot --headless -e --quit || true
