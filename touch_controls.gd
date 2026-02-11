@@ -15,11 +15,11 @@ var attack_pressed: bool = false
 var jump_pressed: bool = false
 var eat_pressed: bool = false
 
-@onready var joystick_base = $JoystickBase
-@onready var joystick_knob = $JoystickBase/JoystickKnob
-@onready var attack_button = $AttackButton
-@onready var jump_button = $JumpButton
-@onready var eat_button = $EatButton
+@onready var joystick_base = $Container/JoystickBase
+@onready var joystick_knob = $Container/JoystickBase/JoystickKnob
+@onready var attack_button = $Container/AttackButton
+@onready var jump_button = $Container/JumpButton
+@onready var eat_button = $Container/EatButton
 
 func _ready() -> void:
 	add_to_group("touch_controls")
