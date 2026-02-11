@@ -86,6 +86,7 @@ func _input(event: InputEvent) -> void:
 func handle_movement(delta: float) -> void:
 	var direction := Vector3.ZERO
 
+	# Keyboard input
 	if Input.is_action_pressed("move_forward"):
 		direction.z -= 1
 	if Input.is_action_pressed("move_back"):
@@ -94,6 +95,14 @@ func handle_movement(delta: float) -> void:
 		direction.x -= 1
 	if Input.is_action_pressed("move_right"):
 		direction.x += 1
+
+	# Touch joystick input
+	var touch_controls = get_tree().get_first_node_in_group("touch_controls")
+	if touch_controls and touch_controls.visible:
+		var touch_dir = touch_controls.get_move_input()
+		if touch_dir.length() > 0.1:
+			direction.x = touch_dir.x
+			direction.z = touch_dir.y
 
 	if direction.length() > 0:
 		direction = direction.normalized()

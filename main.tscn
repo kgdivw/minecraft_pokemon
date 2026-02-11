@@ -1,4 +1,4 @@
-[gd_scene load_steps=9 format=3]
+[gd_scene load_steps=10 format=3]
 
 [ext_resource type="Script" path="res://player.gd" id="1_player"]
 [ext_resource type="Script" path="res://game_ui.gd" id="2_ui"]
@@ -8,6 +8,7 @@
 [ext_resource type="Script" path="res://day_night_cycle.gd" id="6_daynight"]
 [ext_resource type="Script" path="res://mob_spawner.gd" id="7_mob_spawner"]
 [ext_resource type="Script" path="res://inventory_ui.gd" id="8_inventory"]
+[ext_resource type="PackedScene" path="res://touch_controls.tscn" id="9_touch"]
 
 [node name="Main" type="Node3D"]
 
@@ -240,5 +241,7 @@ offset_right = -10.0
 offset_bottom = 40.0
 grow_horizontal = 0
 text = "X"
+
+[node name="TouchControls" parent="." instance=ExtResource("9_touch")]
 
 [connection signal="pokemon_caught" from="Player" to="GameUI" method="show_catch_message"]
