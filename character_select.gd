@@ -15,10 +15,31 @@ var character_preview: Node3D = null
 @onready var preview_position = $PreviewPosition
 @onready var character_label = $UI/CharacterLabel
 @onready var instruction_label = $UI/InstructionLabel
+@onready var left_button = $UI/LeftButton
+@onready var right_button = $UI/RightButton
+@onready var start_button = $UI/StartButton
 
 func _ready() -> void:
 	load_character_preview()
 	update_ui()
+
+	# Connect button signals
+	left_button.pressed.connect(_on_left_pressed)
+	right_button.pressed.connect(_on_right_pressed)
+	start_button.pressed.connect(_on_start_pressed)
+
+func _on_left_pressed() -> void:
+	current_index = (current_index - 1 + characters.size()) % characters.size()
+	load_character_preview()
+	update_ui()
+
+func _on_right_pressed() -> void:
+	current_index = (current_index + 1) % characters.size()
+	load_character_preview()
+	update_ui()
+
+func _on_start_pressed() -> void:
+	select_character()
 
 func _process(_delta: float) -> void:
 	if character_preview:
